@@ -24,6 +24,7 @@ export const DoctorEnrollmentForm = () => {
     province: '',
     postal_code: '',
     bio: '',
+    accepted_insurances: '',
   });
   
   const { user } = useAuth();
@@ -118,6 +119,7 @@ export const DoctorEnrollmentForm = () => {
       if (!success) {
         // 3) Last resort for logged-in users: write directly to pending_doctors
         if (user) {
+          const acceptedInsArray = formData.accepted_insurances ? formData.accepted_insurances.split(',').map(s => s.trim()).filter(Boolean) : [];
           const { error: insertError } = await supabase
             .from('doctors')
             .insert({
@@ -133,6 +135,7 @@ export const DoctorEnrollmentForm = () => {
               province: formData.province,
               postal_code: formData.postal_code,
               bio: formData.bio,
+              accepted_insurances: acceptedInsArray,
               is_available: false,
               approved_at: null,
               approved_by: null,
@@ -169,6 +172,7 @@ export const DoctorEnrollmentForm = () => {
         province: '',
         postal_code: '',
         bio: '',
+        accepted_insurances: '',
       });
     } catch (error: any) {
       toast({
@@ -358,6 +362,18 @@ export const DoctorEnrollmentForm = () => {
                     onChange={(e) => handleInputChange('bio', e.target.value)}
                     rows={4}
                   />
+                </div>
+
+                {/* Accepted Insurance / Medical Aids */}
+                <div className="space-y-2">
+                  <Label htmlFor="accepted_insurances">Accepted Medical Aids / Insurance (comma-separated)</Label>
+                  <Input
+                    id="accepted_insurances"
+                    placeholder="e.g., Discovery Health, Bonitas"
+                    value={formData.accepted_insurances}
+                    onChange={(e) => handleInputChange('accepted_insurances', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">List accepted medical aids or insurance providers separated by commas.</p>
                 </div>
 
                 {/* Requirements Notice */}

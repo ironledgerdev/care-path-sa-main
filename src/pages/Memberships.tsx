@@ -64,6 +64,7 @@ const Memberships = () => {
         return;
       }
       const amountCents = 3900; // R39 quarterly
+      // Primary: invoke Edge Function via supabase-js
       const { data, error } = await supabase.functions.invoke('create-payfast-membership', {
         body: {
           amount: amountCents,
@@ -71,12 +72,45 @@ const Memberships = () => {
           plan: 'premium'
         }
       });
-      if (error) throw error;
-      if (data?.payment_url) {
-        window.location.href = data.payment_url;
-      } else {
-        throw new Error('Payment URL not returned');
+
+      if (!data?.payment_url || error) {
+        // Fallback: direct HTTPS call to Functions endpoint (helps surface non-2xx errors and CORS issues)
+        try {
+          const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import('@/integrations/supabase/client');
+          const { data: sessionData } = await supabase.auth.getSession();
+          const token = sessionData.session?.access_token;
+          const host = new URL(SUPABASE_URL).hostname;
+          const projectRef = host.split('.')[0];
+          const fnUrl = `https://${projectRef}.functions.supabase.co/create-payfast-membership`;
+          const resp = await fetch(fnUrl, {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'omit',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_PUBLISHABLE_KEY,
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ amount: amountCents, description: 'Premium membership (quarterly)', plan: 'premium' }),
+          });
+
+          if (resp.ok) {
+            const json = await resp.json();
+            if (json?.payment_url) {
+              window.location.href = json.payment_url;
+              return;
+            }
+            throw new Error(json?.error || 'Payment URL not returned');
+          } else {
+            const text = await resp.text().catch(() => '');
+            throw new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
+          }
+        } catch (fallbackErr: any) {
+          throw fallbackErr || error || new Error('Payment initialization failed');
+        }
       }
+
+      window.location.href = data.payment_url;
     } catch (err: any) {
       toast({ title: 'Checkout Failed', description: err.message || 'Unable to start checkout', variant: 'destructive' });
     }

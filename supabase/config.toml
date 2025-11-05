@@ -1,7 +1,10 @@
 project_id = "ualtuoghgruwxefqynfg"
 
 [functions.create-payfast-payment]
-verify_jwt = true
+verify_jwt = false
+
+[functions.create-payfast-membership]
+verify_jwt = false
 
 [functions.payfast-webhook]
 verify_jwt = false

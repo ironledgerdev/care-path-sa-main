@@ -20,6 +20,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log('create-payfast-membership called');
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header");
 
@@ -30,9 +31,12 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    console.log('auth result', { authError: authError?.message, userId: user?.id });
     if (authError || !user) throw new Error("Authentication failed");
 
     const { amount, description, plan }: MembershipPaymentRequest = await req.json();
+
+    console.log('membership request', { amount, description, plan });
 
     const MERCHANT_ID = Deno.env.get("PAYFAST_MERCHANT_ID");
     const MERCHANT_KEY = Deno.env.get("PAYFAST_MERCHANT_KEY");
@@ -41,11 +45,18 @@ serve(async (req) => {
       throw new Error("PayFast credentials not configured");
     }
 
-    const { data: profile, error: profileError } = await supabaseClient
+    // Use service role client to read profiles (bypass RLS) to ensure function can read user profile reliably
+    const supabaseServiceForProfile = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: profile, error: profileError } = await supabaseServiceForProfile
       .from('profiles')
       .select('first_name, last_name, email')
       .eq('id', user.id)
       .single();
+    console.log('profile fetch', { profileError: profileError?.message, profile });
     if (profileError || !profile) throw new Error("Failed to get user profile");
 
     const originHeader = req.headers.get("origin");
