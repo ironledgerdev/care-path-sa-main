@@ -20,6 +20,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log('create-payfast-membership called');
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header");
 
