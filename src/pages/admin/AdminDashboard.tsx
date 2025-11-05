@@ -33,7 +33,7 @@ import {
   Shield
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Input } from '@/components/ui/input';
