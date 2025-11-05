@@ -172,6 +172,7 @@ export const DoctorEnrollmentForm = () => {
         province: '',
         postal_code: '',
         bio: '',
+        accepted_insurances: '',
       });
     } catch (error: any) {
       toast({
