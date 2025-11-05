@@ -41,7 +41,13 @@ serve(async (req) => {
       throw new Error("PayFast credentials not configured");
     }
 
-    const { data: profile, error: profileError } = await supabaseClient
+    // Use service role client to read profiles (bypass RLS) to ensure function can read user profile reliably
+    const supabaseServiceForProfile = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: profile, error: profileError } = await supabaseServiceForProfile
       .from('profiles')
       .select('first_name, last_name, email')
       .eq('id', user.id)
