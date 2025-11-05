@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* IronLedgerMedMap Design System - Professional Medical Platform
+All colors MUST be HSL for consistent theming across light/dark modes.
+*/
+
+@layer base {
+  :root {
+    /* Medical Platform Color Palette */
+    --background: 210 40% 98%;
+    --foreground: 210 22% 22%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 22% 22%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 22% 22%;
+
+    /* Medical Blue Primary - Warm, trustworthy */
+    --primary: 201 96% 32%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 201 100% 85%;
+    --primary-soft: 201 85% 45%;
+
+    /* Medical Accent Colors */
+    --secondary: 201 30% 94%;
+    --secondary-foreground: 210 22% 22%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 210 16% 46%;
+
+    --accent: 201 50% 88%;
+    --accent-foreground: 210 22% 22%;
+
+    /* Medical Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Interface Colors */
+    --border: 214 32% 91%;
+    --input: 0 0% 100%;
+    --ring: 201 96% 32%;
+
+    /* Medical Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(201 96% 32%), hsl(201 85% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(201 96% 32%) 0%, hsl(201 85% 45%) 50%, hsl(201 100% 85%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(201 30% 98%) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(201 50% 88%), hsl(201 30% 94%));
+
+    /* Medical Shadows */
+    --shadow-medical: 0 4px 20px -2px hsl(201 96% 32% / 0.15);
+    --shadow-card: 0 2px 10px -2px hsl(201 50% 50% / 0.1);
+    --shadow-button: 0 2px 8px -2px hsl(201 96% 32% / 0.25);
+    --shadow-glow: 0 0 30px hsl(201 100% 85% / 0.6);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Medical Platform Utility Classes */
+@layer components {
+  /* Medical Card Styles */
+  .medical-card {
+    @apply bg-card border border-border rounded-lg shadow-[var(--shadow-card)] 
+           hover:shadow-[var(--shadow-medical)] transition-shadow duration-300;
+    background: var(--gradient-card);
+  }
+
+  .medical-hero-card {
+    @apply bg-card/95 backdrop-blur-sm border border-primary/20 rounded-xl 
+           shadow-[var(--shadow-medical)] hover:shadow-[var(--shadow-glow)] 
+           transition-all duration-500 hover:scale-[1.02];
+  }
+
+  /* Medical Buttons */
+  .btn-medical-primary {
+    @apply bg-primary hover:bg-primary-soft text-primary-foreground 
+           shadow-[var(--shadow-button)] hover:shadow-[var(--shadow-glow)]
+           transition-all duration-300 hover:scale-[1.05] active:scale-[0.98];
+    background: var(--gradient-primary);
+  }
+
+  .btn-medical-secondary {
+    @apply bg-secondary hover:bg-accent text-secondary-foreground 
+           border border-primary/20 hover:border-primary/40
+           transition-all duration-300 hover:scale-[1.02];
+  }
+
+  /* Medical Search */
+  .medical-search {
+    @apply bg-card/95 backdrop-blur-sm border-2 border-primary/30 
+           hover:border-primary/50 focus-within:border-primary 
+           rounded-xl shadow-[var(--shadow-medical)]
+           transition-all duration-300;
+  }
+
+  /* Medical Icons */
+  .medical-icon {
+    @apply text-primary drop-shadow-sm;
+  }
+
+  /* Medical Text Gradients */
+  .text-medical-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-soft bg-clip-text text-transparent;
+  }
+
+  /* Medical Animations */
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .pulse-medical {
+    animation: pulse-medical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .glow-medical {
+    animation: glow-medical 2s ease-in-out infinite alternate;
+  }
+}
+
+/* Medical Platform Animations */
+@layer utilities {
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes pulse-medical {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes glow-medical {
+    from {
+      box-shadow: 0 0 20px hsl(var(--primary-glow) / 0.5);
+    }
+    to {
+      box-shadow: 0 0 30px hsl(var(--primary-glow) / 0.8);
+    }
+  }
+
+  @keyframes slide-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
