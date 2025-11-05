@@ -597,9 +597,9 @@ const DoctorDashboard = () => {
                       </div>
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">Specialty</label>
-                        <p className="text-lg font-semibold">
+                        <div className="text-lg font-semibold">
                           <Badge variant="outline" className="text-base">{doctorInfo.speciality}</Badge>
-                        </p>
+                        </div>
                       </div>
                     </div>
                     
