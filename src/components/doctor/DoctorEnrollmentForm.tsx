@@ -361,6 +361,18 @@ export const DoctorEnrollmentForm = () => {
                   />
                 </div>
 
+                {/* Accepted Insurance / Medical Aids */}
+                <div className="space-y-2">
+                  <Label htmlFor="accepted_insurances">Accepted Medical Aids / Insurance (comma-separated)</Label>
+                  <Input
+                    id="accepted_insurances"
+                    placeholder="e.g., Discovery Health, Bonitas"
+                    value={formData.accepted_insurances}
+                    onChange={(e) => handleInputChange('accepted_insurances', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">List accepted medical aids or insurance providers separated by commas.</p>
+                </div>
+
                 {/* Requirements Notice */}
                 <div className="bg-accent/50 p-4 rounded-lg border-l-4 border-primary">
                   <h4 className="font-semibold text-primary mb-2">Required Documents</h4>
