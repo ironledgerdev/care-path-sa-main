@@ -31,9 +31,12 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    console.log('auth result', { authError: authError?.message, userId: user?.id });
     if (authError || !user) throw new Error("Authentication failed");
 
     const { amount, description, plan }: MembershipPaymentRequest = await req.json();
+
+    console.log('membership request', { amount, description, plan });
 
     const MERCHANT_ID = Deno.env.get("PAYFAST_MERCHANT_ID");
     const MERCHANT_KEY = Deno.env.get("PAYFAST_MERCHANT_KEY");
