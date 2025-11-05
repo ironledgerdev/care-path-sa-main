@@ -56,6 +56,7 @@ serve(async (req) => {
       .select('first_name, last_name, email')
       .eq('id', user.id)
       .single();
+    console.log('profile fetch', { profileError: profileError?.message, profile });
     if (profileError || !profile) throw new Error("Failed to get user profile");
 
     const originHeader = req.headers.get("origin");
