@@ -356,11 +356,18 @@ const DoctorDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-medical-gradient mb-2">
-            Welcome back, Dr. {profile?.first_name} {profile?.last_name}
-          </h1>
-          <p className="text-muted-foreground">Manage your practice and patient appointments</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-medical-gradient mb-2">
+              Welcome back, Dr. {profile?.first_name} {profile?.last_name}
+            </h1>
+            <p className="text-muted-foreground">Manage your practice and patient appointments</p>
+          </div>
+          <div>
+            <Link to="/" className="inline-flex">
+              <Button variant="outline" className="btn-medical-secondary">Home</Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}
