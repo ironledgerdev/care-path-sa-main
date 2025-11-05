@@ -24,6 +24,7 @@ export const DoctorEnrollmentForm = () => {
     province: '',
     postal_code: '',
     bio: '',
+    accepted_insurances: '',
   });
   
   const { user } = useAuth();
