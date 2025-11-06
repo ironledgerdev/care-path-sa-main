@@ -76,7 +76,7 @@ const Header = () => {
               </div>
               <div className="flex flex-col text-center">
                 <span className="text-3xl md:text-4xl font-bold text-medical-gradient tracking-wide">
-                  IronLedgerMedMap
+                  MedMap
                 </span>
                 <span className="text-sm text-muted-foreground font-medium tracking-wider">
                   Find. Book. Heal.
