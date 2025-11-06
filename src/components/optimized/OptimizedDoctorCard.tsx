@@ -57,8 +57,14 @@ const OptimizedDoctorCard = memo(({ doctor, onBookClick, onViewProfile }: Doctor
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           {/* Doctor Avatar */}
-          <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-soft rounded-2xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
-            {doctorInitials}
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
+            {doctor.image ? (
+              <img src={doctor.image} alt={`Dr. ${doctor.name}`} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary to-primary-soft flex items-center justify-center text-white text-2xl font-bold">
+                {doctorInitials}
+              </div>
+            )}
           </div>
 
           <div className="flex-1 min-w-0">
