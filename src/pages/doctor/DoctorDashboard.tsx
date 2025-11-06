@@ -97,9 +97,8 @@ const DoctorDashboard = () => {
       const path = `doctors/${user.id}/${Date.now()}_${file.name}`;
       const { data, error } = await supabase.storage.from('profile-images').upload(path, file, { upsert: true });
       if (error) throw error;
-      const { data: publicData } = supabase.storage.from('profile-images').getPublicUrl(path);
-      const publicUrl = (publicData && (publicData.publicUrl || publicData.publicURL)) || '';
-      setEditForm(prev => ({ ...prev, profile_image_url: publicUrl }));
+      // For private buckets we store the storage path and generate signed URLs when rendering.
+      setEditForm(prev => ({ ...prev, profile_image_url: path }));
     } catch (err: any) {
       console.error('Upload failed', err?.message || err);
       toast({ title: 'Upload failed', description: err?.message || 'Unable to upload image', variant: 'destructive' });
