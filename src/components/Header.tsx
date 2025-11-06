@@ -67,11 +67,11 @@ const Header = () => {
             className="flex items-center space-x-4 hover:scale-105 transition-all duration-500 group"
           >
             <div className="flex items-center space-x-4">
-              <div className="medical-icon p-3 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:rotate-6">
+              <div className="medical-icon p-1 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:rotate-6 flex items-center justify-center overflow-hidden">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Faf68e484decf46379ccbfc0f4be45e74%2Fb83ddf8de41a4fbe8a8a9e48820f2430?format=webp&width=200"
                   alt="MedMap logo"
-                  className="h-10 w-10 object-contain"
+                  className="h-12 w-12 object-cover"
                 />
               </div>
               <div className="flex flex-col text-center">
