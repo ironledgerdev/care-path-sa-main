@@ -1,5 +1,4 @@
 import React, { memo, useMemo, useCallback } from 'react';
-import React, { memo, useMemo, useCallback } from 'react';
 import OptimizedDoctorCard from './OptimizedDoctorCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Stethoscope } from 'lucide-react';
