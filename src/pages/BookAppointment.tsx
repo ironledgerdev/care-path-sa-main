@@ -281,8 +281,17 @@ const BookAppointment = () => {
         }
       });
 
+      if (paymentError) {
+        console.error('create-payfast-payment invoke error:', paymentError);
+        toast({ title: 'Payment Error', description: paymentError.message || 'Failed to initiate payment', variant: 'destructive' });
+      }
+      if (paymentData && paymentData.error) {
+        console.error('create-payfast-payment returned error payload:', paymentData);
+        toast({ title: 'Payment Error', description: paymentData.error || 'Failed to initiate payment', variant: 'destructive' });
+      }
+
       let paymentUrl = paymentData?.payment_url as string | undefined;
-      let payErr: any = paymentError;
+      let payErr: any = paymentError || (paymentData?.error ? new Error(paymentData.error) : null);
 
       // Fallback: direct HTTPS call to Functions
       if (!paymentUrl) {
@@ -297,39 +306,56 @@ const BookAppointment = () => {
           const host = new URL(SUPABASE_URL).hostname;
           const projectRef = host.split('.')[0];
           const fnUrl = `https://${projectRef}.functions.supabase.co/create-payfast-payment`;
-          const resp = await fetch(fnUrl, {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'omit',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_PUBLISHABLE_KEY,
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({
-              booking_id: booking.id,
-              amount: booking.booking_fee,
-              description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-              doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-              appointment_date: selectedDate,
-              appointment_time: selectedTime
-            }),
-          });
-          if (resp.ok) {
-            const json = await resp.json();
-            if (json?.success && json?.payment_url) paymentUrl = json.payment_url;
-            else payErr = new Error(json?.error || 'Payment URL not returned');
-          } else {
-            const text = await resp.text().catch(() => '');
-            payErr = new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
+          let resp: Response | null = null;
+          try {
+            resp = await fetch(fnUrl, {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'omit',
+              headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_PUBLISHABLE_KEY,
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({
+                booking_id: booking.id,
+                amount: booking.booking_fee,
+                description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+                doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+                appointment_date: selectedDate,
+                appointment_time: selectedTime
+              }),
+            });
+          } catch (fetchErr: any) {
+            console.error('Direct function fetch failed:', fetchErr);
+            payErr = new Error(`Network error calling function: ${fetchErr?.message || String(fetchErr)}`);
+          }
+
+          if (resp) {
+            if (resp.ok) {
+              const json = await resp.json();
+              if (json?.success && json?.payment_url) paymentUrl = json.payment_url;
+              else payErr = new Error(json?.error || 'Payment URL not returned');
+              if (json?.error) console.error('Direct function returned error payload:', json);
+            } else {
+              const text = await resp.text().catch(() => '');
+              payErr = new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
+            }
           }
         } catch (e: any) {
           payErr = e;
         }
       }
 
-      if (!paymentUrl) throw payErr || new Error('Payment initialization failed');
+      if (!paymentUrl) {
+        console.error('Payment initialization failed', payErr);
+        toast({ title: 'Payment Error', description: payErr?.message || 'Payment initialization failed', variant: 'destructive' });
+        // Don't throw to avoid unhandled UI crash; keep user on bookings page
+        navigate('/bookings');
+        return;
+      }
 
+      // Redirect to PayFast
       window.location.href = paymentUrl;
 
     } catch (errAny: any) {
