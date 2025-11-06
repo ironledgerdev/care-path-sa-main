@@ -49,6 +49,8 @@ const BookAppointment = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [patientNotes, setPatientNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'medical_aid' | 'cash' | 'card'>('cash');
+  const [medicalAid, setMedicalAid] = useState<string | null>(null);
+  const [otherMedicalAid, setOtherMedicalAid] = useState<string>('');
   const [isBooking, setIsBooking] = useState(false);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
 
@@ -208,12 +210,15 @@ const BookAppointment = () => {
     setIsBooking(true);
     try {
       // Primary: Edge Function via supabase-js
+      // Include medical aid info in patient notes if selected
+      const medicalAidNote = paymentMethod === 'medical_aid' ? `Medical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : '';
+
       const { data: createData, error: createError } = await supabase.functions.invoke('create-booking', {
         body: {
           doctor_id: doctor.id,
           appointment_date: selectedDate,
           appointment_time: selectedTime,
-          patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`
+          patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${medicalAidNote ? `\n${medicalAidNote}` : ''}`
         }
       });
 
@@ -242,7 +247,7 @@ const BookAppointment = () => {
               doctor_id: doctor.id,
               appointment_date: selectedDate,
               appointment_time: selectedTime,
-              patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`
+              patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${paymentMethod === 'medical_aid' ? `\nMedical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : ''}`
             }),
           });
           if (resp.ok) {
@@ -356,7 +361,7 @@ const BookAppointment = () => {
             doctor_id: doctor!.id,
             appointment_date: selectedDate,
             appointment_time: selectedTime,
-            patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`,
+            patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${paymentMethod === 'medical_aid' ? `\nMedical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : ''}`,
             consultation_fee: doctor!.consultation_fee,
             booking_fee,
             total_amount: booking_fee,
@@ -574,17 +579,47 @@ const BookAppointment = () => {
                 <div>
                   <Label className="mb-2 block">Payment Method at Doctor</Label>
                   <div className="grid grid-cols-3 gap-2">
-                    <Button type="button" variant={paymentMethod==='medical_aid'?'default':'outline'} onClick={() => setPaymentMethod('medical_aid')} className={paymentMethod==='medical_aid'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='medical_aid'?'default':'outline'} onClick={() => { setPaymentMethod('medical_aid'); setMedicalAid(null); }} className={paymentMethod==='medical_aid'?'btn-medical-primary':'btn-medical-secondary'}>
                       Medical Aid
                     </Button>
-                    <Button type="button" variant={paymentMethod==='cash'?'default':'outline'} onClick={() => setPaymentMethod('cash')} className={paymentMethod==='cash'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='cash'?'default':'outline'} onClick={() => { setPaymentMethod('cash'); setMedicalAid(null); setOtherMedicalAid(''); }} className={paymentMethod==='cash'?'btn-medical-primary':'btn-medical-secondary'}>
                       Cash
                     </Button>
-                    <Button type="button" variant={paymentMethod==='card'?'default':'outline'} onClick={() => setPaymentMethod('card')} className={paymentMethod==='card'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='card'?'default':'outline'} onClick={() => { setPaymentMethod('card'); setMedicalAid(null); setOtherMedicalAid(''); }} className={paymentMethod==='card'?'btn-medical-primary':'btn-medical-secondary'}>
                       Card
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Consultation fee is settled directly with the doctor using your selected method.</p>
+
+                  {paymentMethod === 'medical_aid' && (
+                    <div className="mt-3">
+                      <Label className="mb-2 block">Medical Aid Provider</Label>
+                      <Select onValueChange={(v) => { setMedicalAid(v); if (v !== 'other') setOtherMedicalAid(''); }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select medical aid" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Discovery Health">Discovery Health</SelectItem>
+                          <SelectItem value="Bonitas">Bonitas</SelectItem>
+                          <SelectItem value="Momentum Health">Momentum Health</SelectItem>
+                          <SelectItem value="Medihelp">Medihelp</SelectItem>
+                          <SelectItem value="Medshield">Medshield</SelectItem>
+                          <SelectItem value="Fedhealth">Fedhealth</SelectItem>
+                          <SelectItem value="GEMS">GEMS</SelectItem>
+                          <SelectItem value="Bestmed">Bestmed</SelectItem>
+                          <SelectItem value="KeyHealth">KeyHealth</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {medicalAid === 'other' && (
+                        <div className="mt-2">
+                          <Label className="mb-2 block">Please specify</Label>
+                          <Input value={otherMedicalAid} onChange={(e) => setOtherMedicalAid(e.target.value)} placeholder="Enter your medical aid provider" />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Patient Notes */}
