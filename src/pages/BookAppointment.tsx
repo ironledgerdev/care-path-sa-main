@@ -228,7 +228,11 @@ const BookAppointment = () => {
       // Fallback: direct HTTPS call to Functions (handles some CORS/network issues)
       if (!booking) {
         try {
-          const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import('@/integrations/supabase/client');
+          const supClient = await import('@/integrations/supabase/client');
+          const SUPABASE_URL = supClient.SUPABASE_URL;
+          const SUPABASE_PUBLISHABLE_KEY = supClient.SUPABASE_PUBLISHABLE_KEY;
+          if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) throw new Error('Supabase configuration missing for direct function fallback');
+          if (!navigator.onLine) throw new Error('Network appears to be offline');
           const { data: sessionData } = await supabase.auth.getSession();
           const token = sessionData.session?.access_token;
           const host = new URL(SUPABASE_URL).hostname;
@@ -283,7 +287,11 @@ const BookAppointment = () => {
       // Fallback: direct HTTPS call to Functions
       if (!paymentUrl) {
         try {
-          const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import('@/integrations/supabase/client');
+          const supClient = await import('@/integrations/supabase/client');
+          const SUPABASE_URL = supClient.SUPABASE_URL;
+          const SUPABASE_PUBLISHABLE_KEY = supClient.SUPABASE_PUBLISHABLE_KEY;
+          if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) throw new Error('Supabase configuration missing for direct function fallback');
+          if (!navigator.onLine) throw new Error('Network appears to be offline');
           const { data: sessionData } = await supabase.auth.getSession();
           const token = sessionData.session?.access_token;
           const host = new URL(SUPABASE_URL).hostname;
