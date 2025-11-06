@@ -44,14 +44,26 @@ Deno.serve(async (req) => {
       }));
     }
 
-    // Memberships (with profile relation if exists)
+    // Memberships (fetch directly and enrich with profiles)
     const membershipsResp = await supabaseAdmin
       .from('memberships')
-      .select(`*, profiles!memberships_user_id_fkey (first_name, last_name, email, role)`)
+      .select('*')
       .order('created_at', { ascending: false })
       .limit(50);
 
-    const memberships = membershipsResp.data || [];
+    let memberships = membershipsResp.data || [];
+    const membershipUserIds = memberships.map((m: any) => m.user_id).filter(Boolean);
+    if (membershipUserIds.length) {
+      const profilesResp = await supabaseAdmin
+        .from('profiles')
+        .select('id, first_name, last_name, email, role')
+        .in('id', membershipUserIds);
+      const profilesData = profilesResp.data || [];
+      memberships = memberships.map((m: any) => ({
+        ...m,
+        profiles: profilesData.find((p: any) => p.id === m.user_id) || null
+      }));
+    }
 
     // Recent bookings with doctor info
     const recentBookingsResp = await supabaseAdmin
