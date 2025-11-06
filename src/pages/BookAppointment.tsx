@@ -391,7 +391,8 @@ const BookAppointment = () => {
         }
 
         toast({ title: 'Booking Created', description: 'Payment pending. You can retry payment from Booking History.', variant: 'default' });
-        navigate(`/booking-success?booking_id=${inserted.id}`);
+        // Redirect to bookings list so the user sees their booking without relying on the booking-success detail fetch
+        navigate('/bookings');
       } catch (finalErr: any) {
         toast({
           title: 'Booking Failed',
