@@ -24,11 +24,11 @@ export const DoctorApprovedEmail = ({
 }: DoctorApprovedEmailProps) => (
   <Html>
     <Head />
-    <Preview>🎉 Congratulations! Your practice has been approved on IronLedgerMedMap</Preview>
+    <Preview>🎉 Congratulations! Your practice has been approved on MedMap</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoSection}>
-          <Text style={logo}>🏥 IronLedgerMedMap</Text>
+          <Text style={logo}>🏥 MedMap</Text>
           <Text style={tagline}>Find. Book. Heal.</Text>
         </Section>
         
@@ -137,14 +137,14 @@ export const DoctorApprovedEmail = ({
         
         <Section style={welcomeSection}>
           <Text style={welcomeText}>
-            Welcome to the IronLedgerMedMap family! We're excited to partner with you 
+            Welcome to the MedMap family! We're excited to partner with you 
             in transforming healthcare access across South Africa.
           </Text>
         </Section>
         
         <Text style={signature}>
           Here's to your success!<br/>
-          The IronLedgerMedMap Provider Team<br/>
+          The MedMap Provider Team<br/>
           <Link href="https://ironledgermedmap.co.za/doctor" style={link}>Access Your Dashboard</Link>
         </Text>
       </Container>

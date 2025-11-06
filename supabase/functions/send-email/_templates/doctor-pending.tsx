@@ -26,18 +26,18 @@ export const DoctorPendingEmail = ({
 }: DoctorPendingEmailProps) => (
   <Html>
     <Head />
-    <Preview>Your practice application is under review - IronLedgerMedMap</Preview>
+    <Preview>Your practice application is under review - MedMap</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoSection}>
-          <Text style={logo}>🏥 IronLedgerMedMap</Text>
+          <Text style={logo}>🏥 MedMap</Text>
           <Text style={tagline}>Find. Book. Heal.</Text>
         </Section>
         
         <Heading style={h1}>Thank you for your application, Dr. {doctor_name}!</Heading>
         
         <Text style={text}>
-          We've received your application to join IronLedgerMedMap as a healthcare provider. 
+          We've received your application to join MedMap as a healthcare provider. 
           Your practice details are currently under review by our medical verification team.
         </Text>
         
@@ -100,7 +100,7 @@ export const DoctorPendingEmail = ({
         </Section>
         
         <Section style={benefitsSection}>
-          <Heading style={h2}>Benefits of joining IronLedgerMedMap</Heading>
+          <Heading style={h2}>Benefits of joining MedMap</Heading>
           <Text style={benefitItem}>✅ Reach patients across all 9 provinces of South Africa</Text>
           <Text style={benefitItem}>✅ Automated appointment scheduling and management</Text>
           <Text style={benefitItem}>✅ Secure payment processing with instant transfers</Text>
@@ -123,7 +123,7 @@ export const DoctorPendingEmail = ({
         
         <Text style={signature}>
           Thank you for choosing to partner with us!<br/>
-          The IronLedgerMedMap Provider Team<br/>
+          The MedMap Provider Team<br/>
           <Link href="https://ironledgermedmap.co.za/doctor-enrollment" style={link}>Provider Portal</Link>
         </Text>
       </Container>

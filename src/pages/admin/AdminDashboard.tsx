@@ -397,24 +397,36 @@ export const AdminDashboardContent: React.FC<{ overrideProfile?: any; bypassAuth
 
   const fetchUserMemberships = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch memberships first
+      const { data: membershipsData, error: membershipsError } = await supabase
         .from('memberships')
-        .select(`
-          *,
-          profiles!memberships_user_id_fkey (
-            first_name,
-            last_name,
-            email,
-            role
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (error) throw error;
-      setUserMemberships((data as any) || []);
+      if (membershipsError) throw membershipsError;
+
+      const userIds = (membershipsData || []).map((m: any) => m.user_id).filter(Boolean);
+      let profilesData: any[] = [];
+
+      if (userIds.length) {
+        const { data: pData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, email, role')
+          .in('id', userIds);
+        if (profilesError) throw profilesError;
+        profilesData = pData || [];
+      }
+
+      // enrich memberships with profile info
+      const enriched = (membershipsData || []).map((m: any) => ({
+        ...m,
+        profiles: profilesData.find(p => p.id === m.user_id) || null
+      }));
+
+      setUserMemberships(enriched as any[]);
       // Save raw debug info
-      setDebugInfo(prev => ({ ...prev, memberships: data }));
+      setDebugInfo(prev => ({ ...prev, memberships: membershipsData }));
     } catch (error: any) {
       setDebugInfo(prev => ({ ...prev, errors: [...prev.errors, (error && error.message) || String(error)] }));
       toast({

@@ -81,7 +81,7 @@ const MembershipManagement = () => {
         body: {
           booking_id: `membership_${user.id}_${Date.now()}`,
           amount: 3900, // R39 in cents
-          description: 'IronLedgerMedMap Premium Membership - Quarterly',
+          description: 'MedMap Premium Membership - Quarterly',
           doctor_name: 'Premium Membership',
           appointment_date: new Date().toISOString().split('T')[0],
           appointment_time: '00:00',
@@ -142,7 +142,7 @@ const MembershipManagement = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-medical-gradient mb-2">Membership Management</h1>
-          <p className="text-muted-foreground">Manage your IronLedgerMedMap membership and benefits</p>
+          <p className="text-muted-foreground">Manage your MedMap membership and benefits</p>
         </div>
 
         {/* Current Membership Status */}

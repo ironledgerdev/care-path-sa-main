@@ -28,11 +28,11 @@ export const DoctorUnderReviewEmail = ({
 }: DoctorUnderReviewEmailProps) => (
   <Html>
     <Head />
-    <Preview>Your IronLedgerMedMap doctor application is under review</Preview>
+    <Preview>Your MedMap doctor application is under review</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoSection}>
-          <Text style={logo}>🏥 IronLedgerMedMap</Text>
+          <Text style={logo}>🏥 MedMap</Text>
           <Text style={tagline}>Find. Book. Heal.</Text>
         </Section>
         
@@ -41,7 +41,7 @@ export const DoctorUnderReviewEmail = ({
         <Text style={greeting}>Dear Dr. {doctor_name},</Text>
         
         <Text style={text}>
-          Thank you for your interest in joining IronLedgerMedMap! Your doctor application 
+          Thank you for your interest in joining MedMap! Your doctor application 
           has been successfully submitted and is currently under review by our medical 
           verification team.
         </Text>
@@ -126,7 +126,7 @@ export const DoctorUnderReviewEmail = ({
           Thank you for choosing to partner with us!<br/>
           <br/>
           Best regards,<br/>
-          The IronLedgerMedMap Medical Review Team<br/>
+          The MedMap Medical Review Team<br/>
           <Link href="https://ironledgermedmap.co.za" style={linkStyle}>ironledgermedmap.co.za</Link>
         </Text>
         

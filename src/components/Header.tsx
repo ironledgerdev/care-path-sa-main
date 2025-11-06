@@ -66,16 +66,22 @@ const Header = () => {
             to="/" 
             className="flex items-center space-x-4 hover:scale-105 transition-all duration-500 group"
           >
-            <div className="medical-icon p-3 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-300 group-hover:rotate-6">
-              <MapPin className="h-10 w-10 text-primary" />
-            </div>
-            <div className="flex flex-col text-center">
-              <span className="text-3xl md:text-4xl font-bold text-medical-gradient tracking-wide">
-                IronLedgerMedMap
-              </span>
-              <span className="text-sm text-muted-foreground font-medium tracking-wider">
-                Find. Book. Heal.
-              </span>
+            <div className="flex items-center space-x-4">
+              <div className="medical-icon h-14 w-14 md:h-16 md:w-16 bg-white rounded-2xl transition-all duration-300 group-hover:rotate-6 flex items-center justify-center overflow-hidden shadow-sm">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Faf68e484decf46379ccbfc0f4be45e74%2F35b00f08674a45308869d5f3a08c0ee7?format=webp&width=200"
+                  alt="MedMap logo"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col text-center">
+                <span className="text-3xl md:text-4xl font-bold text-medical-gradient tracking-wide">
+                  MedMap
+                </span>
+                <span className="text-sm text-muted-foreground font-medium tracking-wider">
+                  Find. Book. Heal.
+                </span>
+              </div>
             </div>
           </Link>
         </div>

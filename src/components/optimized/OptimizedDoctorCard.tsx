@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { MapPin, Clock, Star, Shield, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -48,7 +49,29 @@ const OptimizedDoctorCard = memo(({ doctor, onBookClick, onViewProfile }: Doctor
     }
   }, [doctor.id, onViewProfile, navigate]);
 
-  const doctorInitials = React.useMemo(() => {
+  const [imageUrl, setImageUrl] = useState<string | undefined>(doctor.image && doctor.image.startsWith('http') ? doctor.image : undefined);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!doctor.image) return;
+      if (doctor.image.startsWith('http')) {
+        setImageUrl(doctor.image);
+        return;
+      }
+      try {
+        const { data, error } = await supabase.storage.from('profile-images').createSignedUrl(doctor.image, 60 * 60);
+        if (error) throw error;
+        if (mounted) setImageUrl(data?.signedUrl ?? undefined);
+      } catch (e) {
+        console.error('Failed to create signed URL', e);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [doctor.image]);
+
+  const doctorInitials = useMemo(() => {
     return doctor.name.split(' ').map(n => n[0]).join('');
   }, [doctor.name]);
 
@@ -57,8 +80,14 @@ const OptimizedDoctorCard = memo(({ doctor, onBookClick, onViewProfile }: Doctor
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           {/* Doctor Avatar */}
-          <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-soft rounded-2xl flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
-            {doctorInitials}
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
+            {doctor.image ? (
+              <img src={imageUrl || doctor.image} alt={`Dr. ${doctor.name}`} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary to-primary-soft flex items-center justify-center text-white text-2xl font-bold">
+                {doctorInitials}
+              </div>
+            )}
           </div>
 
           <div className="flex-1 min-w-0">

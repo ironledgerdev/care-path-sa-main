@@ -49,6 +49,8 @@ const BookAppointment = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [patientNotes, setPatientNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'medical_aid' | 'cash' | 'card'>('cash');
+  const [medicalAid, setMedicalAid] = useState<string | null>(null);
+  const [otherMedicalAid, setOtherMedicalAid] = useState<string>('');
   const [isBooking, setIsBooking] = useState(false);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
 
@@ -208,12 +210,15 @@ const BookAppointment = () => {
     setIsBooking(true);
     try {
       // Primary: Edge Function via supabase-js
+      // Include medical aid info in patient notes if selected
+      const medicalAidNote = paymentMethod === 'medical_aid' ? `Medical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : '';
+
       const { data: createData, error: createError } = await supabase.functions.invoke('create-booking', {
         body: {
           doctor_id: doctor.id,
           appointment_date: selectedDate,
           appointment_time: selectedTime,
-          patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`
+          patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${medicalAidNote ? `\n${medicalAidNote}` : ''}`
         }
       });
 
@@ -223,7 +228,11 @@ const BookAppointment = () => {
       // Fallback: direct HTTPS call to Functions (handles some CORS/network issues)
       if (!booking) {
         try {
-          const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import('@/integrations/supabase/client');
+          const supClient = await import('@/integrations/supabase/client');
+          const SUPABASE_URL = supClient.SUPABASE_URL;
+          const SUPABASE_PUBLISHABLE_KEY = supClient.SUPABASE_PUBLISHABLE_KEY;
+          if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) throw new Error('Supabase configuration missing for direct function fallback');
+          if (!navigator.onLine) throw new Error('Network appears to be offline');
           const { data: sessionData } = await supabase.auth.getSession();
           const token = sessionData.session?.access_token;
           const host = new URL(SUPABASE_URL).hostname;
@@ -242,7 +251,7 @@ const BookAppointment = () => {
               doctor_id: doctor.id,
               appointment_date: selectedDate,
               appointment_time: selectedTime,
-              patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`
+              patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${paymentMethod === 'medical_aid' ? `\nMedical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : ''}`
             }),
           });
           if (resp.ok) {
@@ -272,51 +281,81 @@ const BookAppointment = () => {
         }
       });
 
+      if (paymentError) {
+        console.error('create-payfast-payment invoke error:', paymentError);
+        toast({ title: 'Payment Error', description: paymentError.message || 'Failed to initiate payment', variant: 'destructive' });
+      }
+      if (paymentData && paymentData.error) {
+        console.error('create-payfast-payment returned error payload:', paymentData);
+        toast({ title: 'Payment Error', description: paymentData.error || 'Failed to initiate payment', variant: 'destructive' });
+      }
+
       let paymentUrl = paymentData?.payment_url as string | undefined;
-      let payErr: any = paymentError;
+      let payErr: any = paymentError || (paymentData?.error ? new Error(paymentData.error) : null);
 
       // Fallback: direct HTTPS call to Functions
       if (!paymentUrl) {
         try {
-          const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import('@/integrations/supabase/client');
+          const supClient = await import('@/integrations/supabase/client');
+          const SUPABASE_URL = supClient.SUPABASE_URL;
+          const SUPABASE_PUBLISHABLE_KEY = supClient.SUPABASE_PUBLISHABLE_KEY;
+          if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) throw new Error('Supabase configuration missing for direct function fallback');
+          if (!navigator.onLine) throw new Error('Network appears to be offline');
           const { data: sessionData } = await supabase.auth.getSession();
           const token = sessionData.session?.access_token;
           const host = new URL(SUPABASE_URL).hostname;
           const projectRef = host.split('.')[0];
           const fnUrl = `https://${projectRef}.functions.supabase.co/create-payfast-payment`;
-          const resp = await fetch(fnUrl, {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'omit',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_PUBLISHABLE_KEY,
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({
-              booking_id: booking.id,
-              amount: booking.booking_fee,
-              description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-              doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-              appointment_date: selectedDate,
-              appointment_time: selectedTime
-            }),
-          });
-          if (resp.ok) {
-            const json = await resp.json();
-            if (json?.success && json?.payment_url) paymentUrl = json.payment_url;
-            else payErr = new Error(json?.error || 'Payment URL not returned');
-          } else {
-            const text = await resp.text().catch(() => '');
-            payErr = new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
+          let resp: Response | null = null;
+          try {
+            resp = await fetch(fnUrl, {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'omit',
+              headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_PUBLISHABLE_KEY,
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({
+                booking_id: booking.id,
+                amount: booking.booking_fee,
+                description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+                doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+                appointment_date: selectedDate,
+                appointment_time: selectedTime
+              }),
+            });
+          } catch (fetchErr: any) {
+            console.error('Direct function fetch failed:', fetchErr);
+            payErr = new Error(`Network error calling function: ${fetchErr?.message || String(fetchErr)}`);
+          }
+
+          if (resp) {
+            if (resp.ok) {
+              const json = await resp.json();
+              if (json?.success && json?.payment_url) paymentUrl = json.payment_url;
+              else payErr = new Error(json?.error || 'Payment URL not returned');
+              if (json?.error) console.error('Direct function returned error payload:', json);
+            } else {
+              const text = await resp.text().catch(() => '');
+              payErr = new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
+            }
           }
         } catch (e: any) {
           payErr = e;
         }
       }
 
-      if (!paymentUrl) throw payErr || new Error('Payment initialization failed');
+      if (!paymentUrl) {
+        console.error('Payment initialization failed', payErr);
+        toast({ title: 'Payment Error', description: payErr?.message || 'Payment initialization failed', variant: 'destructive' });
+        // Don't throw to avoid unhandled UI crash; keep user on bookings page
+        navigate('/bookings');
+        return;
+      }
 
+      // Redirect to PayFast
       window.location.href = paymentUrl;
 
     } catch (errAny: any) {
@@ -356,7 +395,7 @@ const BookAppointment = () => {
             doctor_id: doctor!.id,
             appointment_date: selectedDate,
             appointment_time: selectedTime,
-            patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}`,
+            patient_notes: `${patientNotes || ''}\nPayment method: ${paymentMethod.replace('_', ' ')}${paymentMethod === 'medical_aid' ? `\nMedical Aid: ${medicalAid === 'other' ? otherMedicalAid || 'Other' : medicalAid || 'Not specified'}` : ''}`,
             consultation_fee: doctor!.consultation_fee,
             booking_fee,
             total_amount: booking_fee,
@@ -378,7 +417,8 @@ const BookAppointment = () => {
         }
 
         toast({ title: 'Booking Created', description: 'Payment pending. You can retry payment from Booking History.', variant: 'default' });
-        navigate(`/booking-success?booking_id=${inserted.id}`);
+        // Redirect to bookings list so the user sees their booking without relying on the booking-success detail fetch
+        navigate('/bookings');
       } catch (finalErr: any) {
         toast({
           title: 'Booking Failed',
@@ -574,17 +614,47 @@ const BookAppointment = () => {
                 <div>
                   <Label className="mb-2 block">Payment Method at Doctor</Label>
                   <div className="grid grid-cols-3 gap-2">
-                    <Button type="button" variant={paymentMethod==='medical_aid'?'default':'outline'} onClick={() => setPaymentMethod('medical_aid')} className={paymentMethod==='medical_aid'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='medical_aid'?'default':'outline'} onClick={() => { setPaymentMethod('medical_aid'); setMedicalAid(null); }} className={paymentMethod==='medical_aid'?'btn-medical-primary':'btn-medical-secondary'}>
                       Medical Aid
                     </Button>
-                    <Button type="button" variant={paymentMethod==='cash'?'default':'outline'} onClick={() => setPaymentMethod('cash')} className={paymentMethod==='cash'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='cash'?'default':'outline'} onClick={() => { setPaymentMethod('cash'); setMedicalAid(null); setOtherMedicalAid(''); }} className={paymentMethod==='cash'?'btn-medical-primary':'btn-medical-secondary'}>
                       Cash
                     </Button>
-                    <Button type="button" variant={paymentMethod==='card'?'default':'outline'} onClick={() => setPaymentMethod('card')} className={paymentMethod==='card'?'btn-medical-primary':'btn-medical-secondary'}>
+                    <Button type="button" variant={paymentMethod==='card'?'default':'outline'} onClick={() => { setPaymentMethod('card'); setMedicalAid(null); setOtherMedicalAid(''); }} className={paymentMethod==='card'?'btn-medical-primary':'btn-medical-secondary'}>
                       Card
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Consultation fee is settled directly with the doctor using your selected method.</p>
+
+                  {paymentMethod === 'medical_aid' && (
+                    <div className="mt-3">
+                      <Label className="mb-2 block">Medical Aid Provider</Label>
+                      <Select onValueChange={(v) => { setMedicalAid(v); if (v !== 'other') setOtherMedicalAid(''); }}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select medical aid" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Discovery Health">Discovery Health</SelectItem>
+                          <SelectItem value="Bonitas">Bonitas</SelectItem>
+                          <SelectItem value="Momentum Health">Momentum Health</SelectItem>
+                          <SelectItem value="Medihelp">Medihelp</SelectItem>
+                          <SelectItem value="Medshield">Medshield</SelectItem>
+                          <SelectItem value="Fedhealth">Fedhealth</SelectItem>
+                          <SelectItem value="GEMS">GEMS</SelectItem>
+                          <SelectItem value="Bestmed">Bestmed</SelectItem>
+                          <SelectItem value="KeyHealth">KeyHealth</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {medicalAid === 'other' && (
+                        <div className="mt-2">
+                          <Label className="mb-2 block">Please specify</Label>
+                          <Input value={otherMedicalAid} onChange={(e) => setOtherMedicalAid(e.target.value)} placeholder="Enter your medical aid provider" />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Patient Notes */}

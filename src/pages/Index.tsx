@@ -79,7 +79,7 @@ const Index = () => {
     {
       name: 'Lerato Motsumi',
       location: 'Johannesburg',
-      text: 'IronLedgerMedMap made it so easy to find a specialist near me. Booked and saw a cardiologist the same day!',
+      text: 'MedMap made it so easy to find a specialist near me. Booked and saw a cardiologist the same day!',
       rating: 5
     },
     {
@@ -134,7 +134,7 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-medical-gradient mb-4">
-              Why Choose IronLedgerMedMap?
+              Why Choose MedMap?
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               We're revolutionizing healthcare access across South Africa with innovation, trust, and transparency
@@ -223,7 +223,7 @@ const Index = () => {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <MapPin className="h-8 w-8 text-primary-glow" />
-                <span className="text-xl font-bold">IronLedgerMedMap</span>
+                <span className="text-xl font-bold">MedMap</span>
               </div>
               <p className="text-muted-foreground mb-4">
                 South Africa's leading medical booking platform. Find. Book. Heal.
@@ -262,7 +262,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-muted-foreground/20 mt-12 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 IronLedgerMedMap. Proudly South African. All rights reserved.</p>
+            <p>&copy; 2024 MedMap. Proudly South African. All rights reserved.</p>
           </div>
         </div>
       </footer>

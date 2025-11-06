@@ -77,6 +77,7 @@ const SimpleVirtualizedList = memo(({
           price: formatCurrency(doctor.consultation_fee),
           availability: 'Available Today',
           verified: true,
+          image: doctor.profile_image_url || undefined,
           languages: ['English', 'Afrikaans'], // Default languages
           experience: `${doctor.years_experience} years`
         };

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  DollarSign, 
+import {
+  Calendar,
+  Clock,
+  Users,
+  DollarSign,
   Settings,
   TrendingUp,
   Eye,
@@ -17,6 +17,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 interface DoctorStats {
   totalBookings: number;
@@ -48,6 +52,104 @@ const DoctorDashboard = () => {
   const [loadingUpcoming, setLoadingUpcoming] = useState(false);
   const { user, profile } = useAuth();
   const { toast } = useToast();
+
+  // Edit profile state
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState<any>({
+    practice_name: '',
+    speciality: '',
+    consultation_fee: '',
+    years_experience: '',
+    address: '',
+    city: '',
+    province: '',
+    postal_code: '',
+    bio: '',
+    accepted_insurances: '',
+    profile_image_url: ''
+  });
+  const [uploading, setUploading] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  useEffect(() => {
+    if (doctorInfo) {
+      setEditForm({
+        practice_name: doctorInfo.practice_name || '',
+        speciality: doctorInfo.speciality || '',
+        consultation_fee: doctorInfo.consultation_fee ? String(Math.round((doctorInfo.consultation_fee || 0) / 100)) : '',
+        years_experience: doctorInfo.years_experience ? String(doctorInfo.years_experience) : '',
+        address: doctorInfo.address || '',
+        city: doctorInfo.city || '',
+        province: doctorInfo.province || '',
+        postal_code: doctorInfo.postal_code || '',
+        bio: doctorInfo.bio || '',
+        accepted_insurances: (doctorInfo.accepted_insurances || []).join ? (doctorInfo.accepted_insurances || []).join(', ') : (doctorInfo.accepted_insurances || ''),
+        profile_image_url: doctorInfo.profile_image_url || ''
+      });
+    }
+  }, [doctorInfo]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !user) return;
+    setUploading(true);
+    try {
+      const path = `doctors/${user.id}/${Date.now()}_${file.name}`;
+      const { data, error } = await supabase.storage.from('profile-images').upload(path, file, { upsert: true });
+      if (error) throw error;
+      // For private buckets we store the storage path and generate signed URLs when rendering.
+      setEditForm(prev => ({ ...prev, profile_image_url: path }));
+    } catch (err: any) {
+      console.error('Upload failed', err?.message || err);
+      toast({ title: 'Upload failed', description: err?.message || 'Unable to upload image', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleEditSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!doctorInfo?.id) {
+      toast({ title: 'No doctor profile', description: 'Create your practice profile first.', variant: 'destructive' });
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const payload: any = {
+        practice_name: editForm.practice_name,
+        speciality: editForm.speciality,
+        consultation_fee: Math.round((parseFloat(editForm.consultation_fee || '0') || 0) * 100),
+        years_experience: editForm.years_experience ? parseInt(editForm.years_experience, 10) : null,
+        address: editForm.address,
+        city: editForm.city,
+        province: editForm.province,
+        postal_code: editForm.postal_code,
+        bio: editForm.bio,
+        profile_image_url: editForm.profile_image_url || null,
+      };
+
+      // accepted_insurances stored as text[] in DB
+      if (editForm.accepted_insurances) {
+        const arr = editForm.accepted_insurances.split(',').map((s: string) => s.trim()).filter(Boolean);
+        payload.accepted_insurances = arr;
+      } else {
+        payload.accepted_insurances = [];
+      }
+
+      const { error } = await supabase.from('doctors').update(payload).eq('id', doctorInfo.id);
+      if (error) throw error;
+
+      toast({ title: 'Profile updated', description: 'Your practice profile has been updated.' });
+      const { data: refreshed, error: refErr } = await supabase.from('doctors').select('*').eq('id', doctorInfo.id).maybeSingle();
+      if (!refErr && refreshed) setDoctorInfo(refreshed);
+      setEditOpen(false);
+    } catch (err: any) {
+      console.error('Save failed', err?.message || err);
+      toast({ title: 'Save failed', description: err?.message || 'Unable to save profile', variant: 'destructive' });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
 
   useEffect(() => {
     if (user && profile?.role === 'doctor') {
@@ -627,10 +729,89 @@ const DoctorDashboard = () => {
                       <p className="mt-1">{doctorInfo.bio || 'No bio provided'}</p>
                     </div>
 
-                    <Button className="btn-medical-primary">
+                    <Button className="btn-medical-primary" onClick={() => setEditOpen(true)}>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit Profile
                     </Button>
+
+                    {/* Edit Profile Dialog */}
+                    <Dialog open={editOpen} onOpenChange={(open) => { if (!open) setEditOpen(false); }}>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Edit Practice Profile</DialogTitle>
+                          <DialogDescription>Update your public profile information shown to patients.</DialogDescription>
+                        </DialogHeader>
+
+                        <form onSubmit={handleEditSubmit} className="space-y-4">
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Practice Name</Label>
+                              <Input value={editForm.practice_name} onChange={(e) => setEditForm({ ...editForm, practice_name: e.target.value })} />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Speciality</Label>
+                              <Input value={editForm.speciality} onChange={(e) => setEditForm({ ...editForm, speciality: e.target.value })} />
+                            </div>
+                          </div>
+
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Consultation Fee (ZAR)</Label>
+                              <Input type="number" value={editForm.consultation_fee} onChange={(e) => setEditForm({ ...editForm, consultation_fee: e.target.value })} />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Years of Experience</Label>
+                              <Input type="number" value={editForm.years_experience} onChange={(e) => setEditForm({ ...editForm, years_experience: e.target.value })} />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Practice Address</Label>
+                            <Input value={editForm.address} onChange={(e) => setEditForm({ ...editForm, address: e.target.value })} />
+                          </div>
+
+                          <div className="grid md:grid-cols-3 gap-4">
+                            <div className="space-y-2">
+                              <Label>City</Label>
+                              <Input value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Province</Label>
+                              <Input value={editForm.province} onChange={(e) => setEditForm({ ...editForm, province: e.target.value })} />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Postal Code</Label>
+                              <Input value={editForm.postal_code} onChange={(e) => setEditForm({ ...editForm, postal_code: e.target.value })} />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Accepted Medical Aids / Insurances (comma-separated)</Label>
+                            <Input value={editForm.accepted_insurances} onChange={(e) => setEditForm({ ...editForm, accepted_insurances: e.target.value })} />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Professional Bio</Label>
+                            <Textarea value={editForm.bio} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} rows={4} />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Profile Image</Label>
+                            <input type="file" accept="image/*" onChange={handleFileChange} />
+                            {uploading && <p className="text-sm text-muted-foreground">Uploading...</p>}
+                            {editForm.profile_image_url && (
+                              <img src={editForm.profile_image_url} alt="profile preview" className="w-24 h-24 object-cover rounded-md mt-2" />
+                            )}
+                          </div>
+
+                          <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+                            <Button type="submit" className="btn-medical-primary" disabled={savingEdit}>{savingEdit ? 'Saving…' : 'Save Changes'}</Button>
+                          </DialogFooter>
+                        </form>
+
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
