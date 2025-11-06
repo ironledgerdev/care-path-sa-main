@@ -66,7 +66,7 @@ const Team = () => {
           </div>
           
           <h1 className="text-4xl lg:text-5xl font-bold text-medical-gradient mb-6">
-            The People Behind IronLedgerMedMap
+            The People Behind MedMap
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">

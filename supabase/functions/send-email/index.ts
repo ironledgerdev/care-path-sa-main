@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
             verification_link
           })
         );
-        subject = 'Verify Your IronLedgerMedMap Account';
+        subject = 'Verify Your MedMap Account';
         to = user_email;
         break;
 
@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
             license_number
           })
         );
-        subject = 'Your Doctor Application is Under Review - IronLedgerMedMap';
+        subject = 'Your Doctor Application is Under Review - MedMap';
         to = doctor_email;
         break;
 
@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
             user_email: emailData.user_email,
           })
         );
-        subject = 'Welcome to IronLedgerMedMap! Your healthcare journey starts here';
+        subject = 'Welcome to MedMap! Your healthcare journey starts here';
         to = emailData.user_email;
         break;
 
@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
             license_number: emailData.license_number,
           })
         );
-        subject = 'Your practice application is under review - IronLedgerMedMap';
+        subject = 'Your practice application is under review - MedMap';
         to = emailData.doctor_email;
         break;
 
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
     console.log('Sending email to:', to);
 
     const { error } = await resend.emails.send({
-      from: 'IronLedgerMedMap <noreply@ironledgermedmap.co.za>',
+      from: 'MedMap <noreply@ironledgermedmap.co.za>',
       to: [to],
       subject,
       html,

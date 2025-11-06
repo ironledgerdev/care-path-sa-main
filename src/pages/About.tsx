@@ -63,7 +63,7 @@ const About = () => {
         <div className="text-center mb-16 animate-slide-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
             <Heart className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">About IronLedgerMedMap</span>
+            <span className="text-sm font-medium text-primary">About MedMap</span>
           </div>
           
           <h1 className="text-4xl lg:text-5xl font-bold text-medical-gradient mb-6">
@@ -71,7 +71,7 @@ const About = () => {
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            IronLedgerMedMap is South Africa's premier digital healthcare platform, connecting patients 
+            MedMap is South Africa's premier digital healthcare platform, connecting patients 
             with verified medical professionals across all nine provinces. We're bridging the gap 
             between patients and quality healthcare with technology, trust, and transparency.
           </p>

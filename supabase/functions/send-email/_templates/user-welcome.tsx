@@ -22,11 +22,11 @@ export const UserWelcomeEmail = ({
 }: UserWelcomeEmailProps) => (
   <Html>
     <Head />
-    <Preview>Welcome to IronLedgerMedMap - Your healthcare journey starts here!</Preview>
+    <Preview>Welcome to MedMap - Your healthcare journey starts here!</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoSection}>
-          <Text style={logo}>🏥 IronLedgerMedMap</Text>
+          <Text style={logo}>🏥 MedMap</Text>
           <Text style={tagline}>Find. Book. Heal.</Text>
         </Section>
         
@@ -102,7 +102,7 @@ export const UserWelcomeEmail = ({
         
         <Text style={signature}>
           Welcome to better healthcare!<br/>
-          The IronLedgerMedMap Team<br/>
+          The MedMap Team<br/>
           <Link href="https://ironledgermedmap.co.za" style={link}>ironledgermedmap.co.za</Link>
         </Text>
       </Container>

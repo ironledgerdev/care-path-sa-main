@@ -31,15 +31,15 @@ export const UserVerificationEmail = ({
 }: UserVerificationEmailProps) => (
   <Html>
     <Head />
-    <Preview>Verify your email to join IronLedgerMedMap</Preview>
+    <Preview>Verify your email to join MedMap</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={logoSection}>
-          <Text style={logo}>🏥 IronLedgerMedMap</Text>
+          <Text style={logo}>🏥 MedMap</Text>
           <Text style={tagline}>Find. Book. Heal.</Text>
         </Section>
         
-        <Heading style={h1}>Welcome to IronLedgerMedMap!</Heading>
+        <Heading style={h1}>Welcome to MedMap!</Heading>
         
         <Text style={text}>
           Thank you for joining South Africa's leading medical booking platform. 
@@ -67,7 +67,7 @@ export const UserVerificationEmail = ({
         </Section>
         
         <Section style={features}>
-          <Text style={featuresTitle}>What you can do with IronLedgerMedMap:</Text>
+          <Text style={featuresTitle}>What you can do with MedMap:</Text>
           <Text style={featureItem}>✅ Find verified healthcare providers across all 9 provinces</Text>
           <Text style={featureItem}>✅ Book appointments instantly with real-time availability</Text>
           <Text style={featureItem}>✅ Access transparent pricing and genuine patient reviews</Text>
@@ -80,7 +80,7 @@ export const UserVerificationEmail = ({
         
         <Text style={signature}>
           Best regards,<br/>
-          The IronLedgerMedMap Team<br/>
+          The MedMap Team<br/>
           <Link href="https://ironledgermedmap.co.za" style={link}>ironledgermedmap.co.za</Link>
         </Text>
       </Container>
