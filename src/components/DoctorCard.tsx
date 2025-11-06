@@ -1,4 +1,5 @@
 import React from 'react';
+import React from 'react';
 import { MapPin, Clock, Star, Shield, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
