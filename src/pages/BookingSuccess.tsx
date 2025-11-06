@@ -51,25 +51,44 @@ const BookingSuccess = () => {
     let attempts = 3;
     while (attempts-- > 0) {
       try {
-        const { data, error } = await supabase
+        // Fetch booking without embedded relations (some schemas may not support embedded joins)
+        const { data: bookingData, error: bookingError } = await supabase
           .from('bookings')
-          .select(`
-            *,
-            doctors (
-              practice_name,
-              speciality,
-              city,
-              province,
-              profiles:user_id (
-                first_name,
-                last_name
-              )
-            )
-          `)
+          .select('*')
           .eq('id', bookingId)
           .single();
-        if (error) throw error;
-        setBooking(data as any);
+        if (bookingError) throw bookingError;
+
+        // Fetch doctor info and profile separately to avoid relying on relation aliases
+        let doctorInfo: any = null;
+        if (bookingData?.doctor_id) {
+          const { data: dData, error: dErr } = await supabase
+            .from('doctors')
+            .select('id, practice_name, speciality, city, province, user_id')
+            .eq('id', bookingData.doctor_id)
+            .single();
+          if (dErr) {
+            // non-fatal: doctor may be deleted
+            console.warn('Failed to load doctor for booking:', dErr);
+          } else if (dData) {
+            let profiles: any = null;
+            if (dData.user_id) {
+              const { data: pData, error: pErr } = await supabase
+                .from('profiles')
+                .select('first_name, last_name')
+                .eq('id', dData.user_id)
+                .single();
+              if (pErr) {
+                console.warn('Failed to load doctor profile:', pErr);
+              } else {
+                profiles = pData;
+              }
+            }
+            doctorInfo = { ...dData, profiles };
+          }
+        }
+
+        setBooking({ ...bookingData, doctors: doctorInfo } as any);
         break;
       } catch (error: any) {
         if (attempts <= 0) {
