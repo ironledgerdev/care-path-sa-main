@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { MapPin, Clock, Star, Shield, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,6 +26,28 @@ interface DoctorCardProps {
 
 const DoctorCard = ({ doctor }: DoctorCardProps) => {
   const navigate = useNavigate();
+  const [imageUrl, setImageUrl] = useState<string | undefined>(doctor.image && doctor.image.startsWith('http') ? doctor.image : undefined);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!doctor.image) return;
+      if (doctor.image.startsWith('http')) {
+        setImageUrl(doctor.image);
+        return;
+      }
+      try {
+        const { data, error } = await supabase.storage.from('profile-images').createSignedUrl(doctor.image, 60 * 60);
+        if (error) throw error;
+        if (mounted) setImageUrl(data?.signedUrl ?? undefined);
+      } catch (e) {
+        console.error('Failed to create signed URL', e);
+        // leave imageUrl undefined to fall back to initials
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [doctor.image]);
 
   const handleBookNow = () => {
     if (doctor.id) {
@@ -50,7 +73,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
           {/* Doctor Avatar */}
           <div className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
             {doctor.image ? (
-              <img src={doctor.image} alt={`Dr. ${doctor.name}`} className="w-full h-full object-cover" />
+              <img src={imageUrl || doctor.image} alt={`Dr. ${doctor.name}`} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary to-primary-soft flex items-center justify-center text-white text-2xl font-bold">
                 {doctor.name.split(' ').map(n => n[0]).join('')}
