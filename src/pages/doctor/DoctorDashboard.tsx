@@ -49,6 +49,105 @@ const DoctorDashboard = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
 
+  // Edit profile state
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState<any>({
+    practice_name: '',
+    speciality: '',
+    consultation_fee: '',
+    years_experience: '',
+    address: '',
+    city: '',
+    province: '',
+    postal_code: '',
+    bio: '',
+    accepted_insurances: '',
+    profile_image_url: ''
+  });
+  const [uploading, setUploading] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  useEffect(() => {
+    if (doctorInfo) {
+      setEditForm({
+        practice_name: doctorInfo.practice_name || '',
+        speciality: doctorInfo.speciality || '',
+        consultation_fee: doctorInfo.consultation_fee ? String(Math.round((doctorInfo.consultation_fee || 0) / 100)) : '',
+        years_experience: doctorInfo.years_experience ? String(doctorInfo.years_experience) : '',
+        address: doctorInfo.address || '',
+        city: doctorInfo.city || '',
+        province: doctorInfo.province || '',
+        postal_code: doctorInfo.postal_code || '',
+        bio: doctorInfo.bio || '',
+        accepted_insurances: (doctorInfo.accepted_insurances || []).join ? (doctorInfo.accepted_insurances || []).join(', ') : (doctorInfo.accepted_insurances || ''),
+        profile_image_url: doctorInfo.profile_image_url || ''
+      });
+    }
+  }, [doctorInfo]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !user) return;
+    setUploading(true);
+    try {
+      const path = `doctors/${user.id}/${Date.now()}_${file.name}`;
+      const { data, error } = await supabase.storage.from('profile-images').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: publicData } = supabase.storage.from('profile-images').getPublicUrl(path);
+      const publicUrl = (publicData && (publicData.publicUrl || publicData.publicURL)) || '';
+      setEditForm(prev => ({ ...prev, profile_image_url: publicUrl }));
+    } catch (err: any) {
+      console.error('Upload failed', err?.message || err);
+      toast({ title: 'Upload failed', description: err?.message || 'Unable to upload image', variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleEditSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!doctorInfo?.id) {
+      toast({ title: 'No doctor profile', description: 'Create your practice profile first.', variant: 'destructive' });
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const payload: any = {
+        practice_name: editForm.practice_name,
+        speciality: editForm.speciality,
+        consultation_fee: Math.round((parseFloat(editForm.consultation_fee || '0') || 0) * 100),
+        years_experience: editForm.years_experience ? parseInt(editForm.years_experience, 10) : null,
+        address: editForm.address,
+        city: editForm.city,
+        province: editForm.province,
+        postal_code: editForm.postal_code,
+        bio: editForm.bio,
+        profile_image_url: editForm.profile_image_url || null,
+      };
+
+      // accepted_insurances stored as text[] in DB
+      if (editForm.accepted_insurances) {
+        const arr = editForm.accepted_insurances.split(',').map((s: string) => s.trim()).filter(Boolean);
+        payload.accepted_insurances = arr;
+      } else {
+        payload.accepted_insurances = [];
+      }
+
+      const { error } = await supabase.from('doctors').update(payload).eq('id', doctorInfo.id);
+      if (error) throw error;
+
+      toast({ title: 'Profile updated', description: 'Your practice profile has been updated.' });
+      const { data: refreshed, error: refErr } = await supabase.from('doctors').select('*').eq('id', doctorInfo.id).maybeSingle();
+      if (!refErr && refreshed) setDoctorInfo(refreshed);
+      setEditOpen(false);
+    } catch (err: any) {
+      console.error('Save failed', err?.message || err);
+      toast({ title: 'Save failed', description: err?.message || 'Unable to save profile', variant: 'destructive' });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   useEffect(() => {
     if (user && profile?.role === 'doctor') {
       fetchDoctorInfo();
