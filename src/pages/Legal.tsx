@@ -1,7 +1,9 @@
 import React from 'react';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, FileText, AlertTriangle, Scale, Lock, UserCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Shield, FileText, AlertTriangle, Scale, Lock, UserCheck, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Legal = () => {
   const legalSections = [
@@ -108,6 +110,78 @@ const Legal = () => {
           </CardContent>
         </Card>
 
+        {/* Compliance Documents */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <h2 className="text-3xl font-bold text-medical-gradient mb-8 text-center">
+            Compliance Documents
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* POPIA Privacy Policy */}
+            <Card className="medical-card hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-medical-primary" />
+                  POPIA Privacy Policy
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Protection of Personal Information Act, 2013 (Act No. 4 of 2013)
+                </p>
+                <p className="text-sm">
+                  Our comprehensive privacy policy outlining how we collect, use, and protect your personal information in compliance with POPIA.
+                </p>
+                <div className="flex flex-col gap-2 pt-4">
+                  <Button asChild className="w-full btn-medical-primary">
+                    <Link to="/privacy-policy" className="inline-flex items-center justify-center gap-2">
+                      View Full Policy
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <a href="/documents/POPIA-Privacy-Policy.md" download className="inline-flex items-center justify-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Download Document
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* PAIA Manual */}
+            <Card className="medical-card hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-medical-primary" />
+                  PAIA Manual
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Promotion of Access to Information Act, 2000 (Act No. 2 of 2000)
+                </p>
+                <p className="text-sm">
+                  Instructions for requesting access to records held by MedMap, including procedures, fees, and appeal mechanisms.
+                </p>
+                <div className="flex flex-col gap-2 pt-4">
+                  <Button asChild className="w-full btn-medical-primary">
+                    <Link to="/paia-manual" className="inline-flex items-center justify-center gap-2">
+                      View Manual
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <a href="/documents/PAIA-Manual.md" download className="inline-flex items-center justify-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Download Manual
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         {/* Contact Legal */}
         <Card className="medical-card max-w-2xl mx-auto">
           <CardHeader>
@@ -124,12 +198,20 @@ const Legal = () => {
                 Business Hours: Monday - Friday, 9:00 AM - 5:00 PM (SAST)
               </p>
             </div>
+            <div className="mt-6 space-y-2">
+              <p className="text-sm text-muted-foreground">
+                <strong>Privacy & Data Protection:</strong> privacy@ironledgermedmap.co.za
+              </p>
+              <p className="text-sm text-muted-foreground">
+                <strong>PAIA Requests:</strong> paia@ironledgermedmap.co.za
+              </p>
+            </div>
             <div className="mt-6 p-4 bg-accent/50 rounded-lg border-l-4 border-primary">
               <p className="text-sm text-muted-foreground">
-                Last updated: {new Date().toLocaleDateString('en-ZA', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                Last updated: {new Date().toLocaleDateString('en-ZA', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })}
               </p>
             </div>
