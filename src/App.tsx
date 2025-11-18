@@ -88,6 +88,8 @@ const App = () => {
                         <Route path="/about" element={<About />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/legal" element={<Legal />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/paia-manual" element={<PAIAManual />} />
                         <Route path="/doctor-enrollment" element={<DoctorEnrollment />} />
                         <Route path="/DoctorEnrollment" element={<Navigate to="/doctor-enrollment" replace />} />
                         <Route path="/doctorEnrollment" element={<Navigate to="/doctor-enrollment" replace />} />
