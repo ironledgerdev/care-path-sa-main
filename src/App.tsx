@@ -16,6 +16,8 @@ const Memberships = lazy(() => import("./pages/Memberships"));
 const About = lazy(() => import("./pages/About"));
 const Team = lazy(() => import("./pages/Team"));
 const Legal = lazy(() => import("./pages/Legal"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const PAIAManual = lazy(() => import("./pages/PAIAManual"));
 const DoctorEnrollment = lazy(() => import("./pages/DoctorEnrollment"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminMashauPermits = lazy(() => import("./pages/admin/AdminMashauPermits"));
@@ -86,6 +88,8 @@ const App = () => {
                         <Route path="/about" element={<About />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/legal" element={<Legal />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/paia-manual" element={<PAIAManual />} />
                         <Route path="/doctor-enrollment" element={<DoctorEnrollment />} />
                         <Route path="/DoctorEnrollment" element={<Navigate to="/doctor-enrollment" replace />} />
                         <Route path="/doctorEnrollment" element={<Navigate to="/doctor-enrollment" replace />} />
