@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedMap - Complete Tech Stack Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin: 40px 0 20px 0;
+            color: #1a3a52;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 15px;
+            page-break-after: avoid;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            margin: 30px 0 15px 0;
+            color: #0066cc;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+            color: #003d99;
+            page-break-after: avoid;
+        }
+        
+        h4 {
+            font-size: 1.1em;
+            margin: 15px 0 8px 0;
+            color: #005299;
+        }
+        
+        p {
+            margin: 12px 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            color: #d63384;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #0066cc;
+        }
+        
+        pre code {
+            color: #333;
+            padding: 0;
+            background: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #0066cc;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .highlight-box {
+            background: #e8f4f8;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .tech-item {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 3px solid #0066cc;
+            border-radius: 2px;
+        }
+        
+        .tech-item strong {
+            color: #0066cc;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin: 10px 0;
+        }
+        
+        .toc li {
+            margin: 5px 0;
+        }
+        
+        .toc a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            ul, ol, table, pre {
+                page-break-inside: avoid;
+            }
+            
+            a {
+                color: #0066cc;
+                text-decoration: none;
+            }
+        }
+        
+        .version-info {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #b3d9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title Page -->
+        <h1>MedMap - Complete Tech Stack Documentation</h1>
+        
+        <div class="version-info">
+            <p><strong>Document Version:</strong> 1.0</p>
+            <p><strong>Last Updated:</strong> 2025</p>
+            <p><strong>Status:</strong> Complete & Active Development</p>
+            <p><strong>Organization:</strong> Iron Ledger Medical</p>
+            <p><strong>Project URL:</strong> https://lovable.dev/projects/be49719b-7db9-4b97-af14-04a31caaef23</p>
+        </div>
+
+        <!-- Executive Summary -->
+        <h2>1. Executive Summary</h2>
+        
+        <p><strong>MedMap</strong> is a comprehensive South African healthcare appointment booking and medical services platform. It's a full-stack web application designed for patients to book appointments with doctors, manage memberships, make payments, and for healthcare providers to manage their practices and patient interactions. The platform prioritizes POPIA (Protection of Personal Information Act) and PAIA (Promotion of Access to Information Act) compliance for South African regulations.</p>
+        
+        <div class="highlight-box">
+            <p><strong>Key Details:</strong></p>
+            <ul>
+                <li>Organization: Iron Ledger Medical (ironledgermedmap.co.za)</li>
+                <li>Project ID: be49719b-7db9-4b97-af14-04a31caaef23</li>
+                <li>Supabase Project ID: ualtuoghgruwxefqynfg</li>
+                <li>Development Platform: Lovable (Lovable.dev)</li>
+                <li>Repository: GitHub (vibe-garden branch)</li>
+            </ul>
+        </div>
+
+        <!-- Technology Stack Overview -->
+        <h2>2. Technology Stack Overview</h2>
+        
+        <h3>Frontend Architecture</h3>
+        <pre>React 18.3.1 + TypeScript 5.8.3
+    ↓
+Vite 5.4.19 (Build Tool)
+    ↓
+ShadcN/UI Components + Radix UI
+    ↓
+Tailwind CSS 3.4.17 (Styling)
+    ↓
+React Router DOM 6.30.1 (Routing)</pre>
+        
+        <h3>Backend Architecture</h3>
+        <pre>Supabase (Firebase Alternative)
+    ├─ PostgreSQL Database
+    ├─ Authentication (Auth)
+    ├─ Edge Functions (Deno Runtime)
+    ├─ Real-time Subscriptions
+    └─ Storage
+
+Third-Party Integrations:
+    ├─ PayFast (Payment Processing)
+    ├─ Sentry (Error Monitoring)
+    ├─ Email Service Provider
+    └─ Voice/Chat Widgets</pre>
+
+        <!-- Detailed Technology Breakdown -->
+        <h2>3. Detailed Technology Breakdown</h2>
+        
+        <h3>3.1 Frontend Dependencies</h3>
+        
+        <h4>Core Framework</h4>
+        <ul>
+            <li><strong>React</strong> 18.3.1 - UI component library</li>
+            <li><strong>React DOM</strong> 18.3.1 - DOM rendering</li>
+            <li><strong>TypeScript</strong> 5.8.3 - Type-safe JavaScript</li>
+        </ul>
+        
+        <h4>Routing & Navigation</h4>
+        <ul>
+            <li><strong>React Router DOM</strong> 6.30.1 - Client-side routing with modern features</li>
+        </ul>
+        
+        <h4>State Management & Data Fetching</h4>
+        <ul>
+            <li><strong>TanStack React Query</strong> 5.83.0 - Server state management</li>
+            <li><strong>React Hook Form</strong> 7.61.1 - Performant form handling</li>
+            <li><strong>Zod</strong> 3.25.76 - Schema validation</li>
+        </ul>
+        
+        <h4>UI Framework & Components</h4>
+        <ul>
+            <li><strong>shadcn/ui</strong> - Component library built on Radix UI</li>
+            <li><strong>Radix UI</strong> - Accessible, unstyled component primitives</li>
+            <li><strong>@hookform/resolvers</strong> 3.10.0 - Form validation</li>
+        </ul>
+        
+        <h4>Styling & Design</h4>
+        <ul>
+            <li><strong>Tailwind CSS</strong> 3.4.17 - Utility-first CSS framework</li>
+            <li><strong>Tailwind Merge</strong> 2.6.0 - Merge Tailwind classes</li>
+            <li><strong>Tailwind CSS Animate</strong> 1.0.7 - Animation utilities</li>
+            <li><strong>PostCSS</strong> 8.5.6 - CSS transformation</li>
+            <li><strong>AutoPrefixer</strong> 10.4.21 - Vendor prefix generation</li>
+        </ul>
+        
+        <h4>Specialized UI Components</h4>
+        <ul>
+            <li><strong>Recharts</strong> 2.15.4 - Data visualization</li>
+            <li><strong>Embla Carousel</strong> 8.6.0 - Carousel component</li>
+            <li><strong>React Window</strong> 2.0.0 - Virtual scrolling</li>
+            <li><strong>React Resizable Panels</strong> 2.1.9 - Resizable layouts</li>
+            <li><strong>Sonner</strong> 1.7.4 - Toast notifications</li>
+            <li><strong>cmdk</strong> 1.1.1 - Command palette</li>
+            <li><strong>Vaul</strong> 0.9.9 - Drawer component</li>
+        </ul>
+        
+        <h4>Date & Time Handling</h4>
+        <ul>
+            <li><strong>date-fns</strong> 3.6.0 - Date utilities</li>
+            <li><strong>React Day Picker</strong> 8.10.1 - Date picker component</li>
+        </ul>
+        
+        <h4>Monitoring & Error Handling</h4>
+        <ul>
+            <li><strong>Sentry React</strong> 8.55.0 - Error tracking</li>
+            <li>Custom Error Boundary component</li>
+        </ul>
+        
+        <h3>3.2 Backend Technologies</h3>
+        
+        <h4>Supabase Stack</h4>
+        <ul>
+            <li>Database: PostgreSQL with Row-Level Security (RLS)</li>
+            <li>Authentication: Supabase Auth (JWT-based)</li>
+            <li>API: RESTful API auto-generated from schema</li>
+            <li>Real-time: WebSocket subscriptions</li>
+            <li>Functions: Edge Functions (Serverless, Deno runtime)</li>
+            <li>Storage: File storage for documents and images</li>
+        </ul>
+        
+        <h4>Edge Functions (Deno Runtime)</h4>
+        <p>12 serverless functions deployed:</p>
+        <ul>
+            <li><strong>create-booking</strong> - Create appointment bookings</li>
+            <li><strong>create-payfast-payment</strong> - Initialize payment transactions</li>
+            <li><strong>create-payfast-membership</strong> - Create subscriptions</li>
+            <li><strong>payfast-webhook</strong> - Handle payment notifications</li>
+            <li><strong>send-email</strong> - Send transactional emails</li>
+            <li><strong>submit-doctor-enrollment</strong> - Process doctor registration</li>
+            <li><strong>admin-data</strong> - Retrieve admin analytics</li>
+            <li><strong>generate-admin-invite</strong> - Create admin invitations</li>
+            <li><strong>verify-admin-invite</strong> - Validate invitations</li>
+            <li><strong>verify-admin-password</strong> - Validate credentials</li>
+            <li><strong>realtime-token</strong> - Generate real-time tokens</li>
+            <li><strong>fix-admin-account</strong> - Account recovery tool</li>
+        </ul>
+        
+        <h4>Third-Party Services</h4>
+        <div class="tech-item">
+            <strong>PayFast</strong>
+            <ul style="margin-top: 8px;">
+                <li>PCI DSS compliant payment gateway</li>
+                <li>Payment processing for appointments and memberships</li>
+                <li>Webhook integration for payment notifications</li>
+                <li>Currency: ZAR (South African Rand)</li>
+            </ul>
+        </div>
+        
+        <div class="tech-item">
+            <strong>Sentry</strong>
+            <ul style="margin-top: 8px;">
+                <li>Error tracking and performance monitoring</li>
+                <li>Session tracking and profiling</li>
+                <li>Real-time error notifications</li>
+            </ul>
+        </div>
+        
+        <div class="tech-item">
+            <strong>Email Service</strong>
+            <ul style="margin-top: 8px;">
+                <li>Transactional email delivery</li>
+                <li>Appointment confirmations and reminders</li>
+                <li>Password reset and verification</li>
+            </ul>
+        </div>
+
+        <!-- Database Schema -->
+        <h2>4. Database Schema</h2>
+        
+        <h3>Core Tables</h3>
+        
+        <h4>1. profiles (User Profiles)</h4>
+        <pre>- id (UUID, PK, FK auth.users)
+- email (text, unique)
+- first_name (text)
+- last_name (text)
+- phone (text)
+- role (enum: 'patient' | 'doctor' | 'admin')
+- created_at (timestamp)
+- updated_at (timestamp)</pre>
+        
+        <h4>2. doctors (Approved Healthcare Providers)</h4>
+        <pre>- id (UUID, PK)
+- user_id (UUID, FK profiles)
+- name (text)
+- speciality (text)
+- city (text)
+- province (text)
+- practice_name (text)
+- consultation_fee (numeric, cents)
+- is_available (boolean)
+- created_at (timestamp)
+- updated_at (timestamp)</pre>
+        
+        <h4>3. doctor_schedules (Doctor Availability)</h4>
+        <pre>- id (UUID, PK)
+- doctor_id (UUID, FK doctors)
+- day_of_week (enum: Mon-Sun)
+- start_time (time)
+- end_time (time)
+- break_start (time, nullable)
+- break_end (time, nullable)</pre>
+        
+        <h4>4. bookings (Appointment Records)</h4>
+        <pre>- id (UUID, PK)
+- user_id (UUID, FK profiles)
+- doctor_id (UUID, FK doctors)
+- appointment_date (date)
+- appointment_time (time)
+- status (enum: 'pending' | 'confirmed' | 'completed' | 'cancelled')
+- payment_status (enum: 'pending' | 'paid' | 'refunded')
+- consultation_fee (numeric, cents)
+- booking_fee (numeric, cents)
+- total_amount (numeric, cents)</pre>
+        
+        <h4>5. memberships (User Subscriptions)</h4>
+        <pre>- id (UUID, PK)
+- user_id (UUID, FK profiles)
+- membership_type (enum: 'free' | 'standard' | 'premium')
+- subscription_status (enum: 'active' | 'inactive')
+- free_bookings_remaining (integer)
+- payfast_subscription_id (text)
+- start_date (date)
+- renewal_date (date)</pre>
+        
+        <h4>6. pending_doctors (Doctor Registration Queue)</h4>
+        <pre>- id (UUID, PK)
+- user_id (UUID, FK profiles)
+- name (text)
+- speciality (text)
+- status (enum: 'pending' | 'approved' | 'rejected')</pre>
+        
+        <h4>7. system_settings (Admin Configuration)</h4>
+        <pre>- id (UUID, PK)
+- setting_key (text, unique)
+- setting_value (text)
+- description (text)</pre>
+
+        <!-- Application Architecture -->
+        <h2>5. Application Architecture</h2>
+        
+        <h3>5.1 Frontend Structure</h3>
+        
+        <p>The frontend is organized into logical feature areas:</p>
+        
+        <div class="tech-item">
+            <strong>Pages (Route Components)</strong>
+            <p style="margin-top: 8px;">30+ pages including Index, DoctorSearch, BookAppointments, PatientDashboard, AdminDashboard, DoctorPortal, and compliance pages (PrivacyPolicy, PAIAManual)</p>
+        </div>
+        
+        <div class="tech-item">
+            <strong>Components</strong>
+            <p style="margin-top: 8px;">50+ reusable UI components organized by function (ui/, admin/, doctor/, notifications/, optimized/)</p>
+        </div>
+        
+        <div class="tech-item">
+            <strong>Hooks</strong>
+            <p style="margin-top: 8px;">Custom hooks for authentication, data fetching, form handling, and mobile detection</p>
+        </div>
+        
+        <div class="tech-item">
+            <strong>Backend</strong>
+            <p style="margin-top: 8px;">Data access layer with repositories for profiles, doctors, bookings, memberships, and system settings</p>
+        </div>
+        
+        <h3>5.2 Routing Structure</h3>
+        
+        <h4>Public Routes</h4>
+        <ul>
+            <li><code>/</code> - Home</li>
+            <li><code>/search</code> - Doctor search</li>
+            <li><code>/doctor/:doctorId</code> - Doctor profile</li>
+            <li><code>/memberships</code> - Membership plans</li>
+            <li><code>/about</code>, <code>/team</code>, <code>/contact</code> - Info pages</li>
+            <li><code>/legal</code>, <code>/privacy-policy</code>, <code>/paia-manual</code> - Compliance</li>
+        </ul>
+        
+        <h4>Protected Routes (Authenticated)</h4>
+        <ul>
+            <li><code>/dashboard</code> - Patient dashboard</li>
+            <li><code>/profile</code> - User profile</li>
+            <li><code>/book-appointments</code> - Booking form</li>
+            <li><code>/booking-history</code> - Past bookings</li>
+            <li><code>/doctor</code> - Doctor dashboard</li>
+        </ul>
+        
+        <h4>Admin Routes (Role-Protected)</h4>
+        <ul>
+            <li><code>/admin</code> - Admin dashboard</li>
+            <li><code>/admin-setup</code> - Initial setup</li>
+            <li><code>/create-admin-account</code> - Account creation</li>
+        </ul>
+
+        <!-- Key Features -->
+        <h2>6. Key Features Implemented</h2>
+        
+        <h3>Patient Features</h3>
+        <ul>
+            <li>✅ Doctor search with filters (city, speciality)</li>
+            <li>✅ Doctor profiles and availability viewing</li>
+            <li>✅ Appointment booking with conflict prevention</li>
+            <li>✅ Online payment via PayFast</li>
+            <li>✅ Booking history and cancellation</li>
+            <li>✅ Membership plans (free, standard, premium)</li>
+            <li>✅ Email notifications and confirmations</li>
+            <li>✅ User profile management</li>
+            <li>✅ Telemedicine support</li>
+        </ul>
+        
+        <h3>Doctor Features</h3>
+        <ul>
+            <li>✅ Online enrollment and application</li>
+            <li>✅ Profile management and availability scheduling</li>
+            <li>✅ Appointment management</li>
+            <li>✅ Patient list and notes</li>
+            <li>✅ Booking analytics and revenue tracking</li>
+            <li>✅ Practice management settings</li>
+        </ul>
+        
+        <h3>Admin Features</h3>
+        <ul>
+            <li>✅ User management (create, edit, delete)</li>
+            <li>✅ Doctor approval/rejection workflow</li>
+            <li>✅ System analytics dashboard</li>
+            <li>✅ Revenue and booking statistics</li>
+            <li>✅ Medical permits management</li>
+            <li>✅ Role-based access control</li>
+        </ul>
+        
+        <h3>Compliance Features</h3>
+        <ul>
+            <li>✅ POPIA (Privacy Act) compliance</li>
+            <li>✅ PAIA (Access to Information) compliance</li>
+            <li>✅ Privacy policy documentation</li>
+            <li>✅ Data retention policies</li>
+            <li>✅ Third-party disclosure documentation</li>
+        </ul>
+
+        <!-- Performance Optimizations -->
+        <h2>7. Performance Optimizations</h2>
+        
+        <h3>Frontend Optimizations</h3>
+        <ul>
+            <li>Code splitting with lazy-loaded route pages</li>
+            <li>React.memo on expensive components</li>
+            <li>Lazy image loading with intersection observer</li>
+            <li>Virtual scrolling for large lists (React Window)</li>
+            <li>Tailwind CSS purging of unused styles</li>
+            <li>React Query caching with configurable times</li>
+        </ul>
+        
+        <h3>Backend Optimizations</h3>
+        <ul>
+            <li>Database indexing on frequently queried columns</li>
+            <li>Selective field selection in queries</li>
+            <li>Edge function response caching</li>
+        </ul>
+
+        <!-- Security Measures -->
+        <h2>8. Security Measures</h2>
+        
+        <h3>Authentication & Authorization</h3>
+        <ul>
+            <li>JWT-based authentication (Supabase Auth)</li>
+            <li>Row-Level Security (RLS) on all tables</li>
+            <li>Role-based access control (RBAC)</li>
+            <li>Protected API endpoints</li>
+        </ul>
+        
+        <h3>Data Protection</h3>
+        <ul>
+            <li>Encrypted password storage (bcrypt)</li>
+            <li>HTTPS-only connections</li>
+            <li>CORS configuration</li>
+            <li>SQL injection prevention (parameterized queries)</li>
+        </ul>
+        
+        <h3>Third-Party Security</h3>
+        <ul>
+            <li>PayFast signature verification</li>
+            <li>Email verification for accounts</li>
+            <li>Admin invitation tokens</li>
+            <li>Webhook signature validation</li>
+        </ul>
+
+        <!-- Compliance & Legal -->
+        <h2>9. Compliance & Legal</h2>
+        
+        <h3>South African Regulations</h3>
+        
+        <div class="highlight-box">
+            <strong>POPIA (Protection of Personal Information Act, 2013)</strong>
+            <ul style="margin-top: 10px;">
+                <li>Privacy policy published and accessible</li>
+                <li>Lawful processing basis documented</li>
+                <li>Data retention periods specified (3-7 years)</li>
+                <li>User rights implemented (access, correction, deletion)</li>
+                <li>Information officer contact details provided</li>
+            </ul>
+        </div>
+        
+        <div class="highlight-box">
+            <strong>PAIA (Promotion of Access to Information Act, 2000)</strong>
+            <ul style="margin-top: 10px;">
+                <li>PAIA manual published and accessible</li>
+                <li>Request procedures documented</li>
+                <li>Response timeframes specified (14-30 days)</li>
+                <li>Appeal mechanism defined</li>
+                <li>Request form template provided</li>
+            </ul>
+        </div>
+
+        <!-- Environment Variables -->
+        <h2>10. Environment Variables</h2>
+        
+        <h3>Frontend Variables (Required)</h3>
+        <pre>VITE_SUPABASE_URL=https://[project].supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=[anon-key]
+VITE_SENTRY_DSN=[sentry-dsn]
+VITE_ADMIN_EMAIL=[dev-admin-email]
+VITE_ADMIN_PASSWORD=[dev-admin-password]</pre>
+        
+        <h3>Backend Secrets (Supabase)</h3>
+        <pre>SUPABASE_URL=[project-url]
+SUPABASE_SERVICE_ROLE_KEY=[service-role-key]
+PAYFAST_MERCHANT_ID=[merchant-id]
+PAYFAST_MERCHANT_KEY=[merchant-key]
+PAYFAST_PASSPHRASE=[passphrase]</pre>
+
+        <!-- Development Workflow -->
+        <h2>11. Development Workflow</h2>
+        
+        <h3>Local Development</h3>
+        <pre>npm install              # Install dependencies
+npm run dev              # Start dev server
+npm run build            # Production build
+npm run lint             # Check code quality</pre>
+        
+        <h3>Deployment</h3>
+        <ul>
+            <li><strong>Frontend:</strong> Lovable platform (automatic)</li>
+            <li><strong>Backend:</strong> Supabase (serverless)</li>
+            <li><strong>Database:</strong> Supabase PostgreSQL (managed)</li>
+            <li><strong>Edge Functions:</strong> Deployed via supabase CLI or GitHub Actions</li>
+        </ul>
+
+        <!-- Summary Table -->
+        <h2>12. Technology Summary</h2>
+        
+        <table>
+            <tr>
+                <th>Aspect</th>
+                <th>Technology</th>
+            </tr>
+            <tr>
+                <td>Language</td>
+                <td>TypeScript 5.8.3</td>
+            </tr>
+            <tr>
+                <td>Frontend Framework</td>
+                <td>React 18.3.1</td>
+            </tr>
+            <tr>
+                <td>UI Library</td>
+                <td>shadcn/ui + Radix UI</td>
+            </tr>
+            <tr>
+                <td>Styling</td>
+                <td>Tailwind CSS 3.4.17</td>
+            </tr>
+            <tr>
+                <td>Build Tool</td>
+                <td>Vite 5.4.19</td>
+            </tr>
+            <tr>
+                <td>Routing</td>
+                <td>React Router 6.30.1</td>
+            </tr>
+            <tr>
+                <td>State Management</td>
+                <td>React Query 5.83.0</td>
+            </tr>
+            <tr>
+                <td>Form Handling</td>
+                <td>React Hook Form 7.61.1</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td>PostgreSQL (Supabase)</td>
+            </tr>
+            <tr>
+                <td>Backend API</td>
+                <td>Supabase REST API</td>
+            </tr>
+            <tr>
+                <td>Serverless Functions</td>
+                <td>Deno (Supabase Edge Functions)</td>
+            </tr>
+            <tr>
+                <td>Authentication</td>
+                <td>Supabase Auth (JWT)</td>
+            </tr>
+            <tr>
+                <td>Payment Gateway</td>
+                <td>PayFast (PCI DSS)</td>
+            </tr>
+            <tr>
+                <td>Error Tracking</td>
+                <td>Sentry 8.55.0</td>
+            </tr>
+            <tr>
+                <td>Charts/Analytics</td>
+                <td>Recharts 2.15.4</td>
+            </tr>
+            <tr>
+                <td>Icons</td>
+                <td>Lucide React 0.462.0</td>
+            </tr>
+            <tr>
+                <td>Notifications</td>
+                <td>Sonner 1.7.4 + Custom</td>
+            </tr>
+            <tr>
+                <td>Compliance</td>
+                <td>POPIA + PAIA (South Africa)</td>
+            </tr>
+            <tr>
+                <td>Deployment</td>
+                <td>Lovable (Frontend) + Supabase (Backend)</td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>MedMap - Complete Tech Stack Documentation</strong></p>
+            <p>Document Version: 1.0 | Last Updated: 2025 | Status: Complete & Active Development</p>
+            <p><strong>Contact:</strong> privacy@ironledgermedmap.co.za | paia@ironledgermedmap.co.za</p>
+            <p style="margin-top: 20px; font-size: 0.85em;">This document contains comprehensive technical information about the MedMap platform architecture, technology stack, database schema, and deployment infrastructure.</p>
+        </div>
+    </div>
+
+    <script>
+        // Print to PDF instructions
+        if (window.location.hash === '#print') {
+            window.print();
+        }
+    </script>
+</body>
+</html>
