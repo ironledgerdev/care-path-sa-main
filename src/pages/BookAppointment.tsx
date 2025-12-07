@@ -269,82 +269,44 @@ const BookAppointment = () => {
 
       if (!booking) throw lastErr || new Error('Failed to create booking');
 
-      // Initialize PayFast payment (primary invoke)
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-payfast-payment', {
-        body: {
-          booking_id: booking.id,
-          amount: booking.booking_fee,
-          description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-          doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-          appointment_date: selectedDate,
-          appointment_time: selectedTime
-        }
-      });
+      // Initialize PayFast payment via Netlify function
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
 
-      if (paymentError) {
-        console.error('create-payfast-payment invoke error:', paymentError);
-        toast({ title: 'Payment Error', description: paymentError.message || 'Failed to initiate payment', variant: 'destructive' });
-      }
-      if (paymentData && paymentData.error) {
-        console.error('create-payfast-payment returned error payload:', paymentData);
-        toast({ title: 'Payment Error', description: paymentData.error || 'Failed to initiate payment', variant: 'destructive' });
-      }
+      let paymentUrl: string | undefined;
+      let payErr: any = null;
 
-      let paymentUrl = paymentData?.payment_url as string | undefined;
-      let payErr: any = paymentError || (paymentData?.error ? new Error(paymentData.error) : null);
+      try {
+        const resp = await fetch('/api/create-payfast-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            booking_id: booking.id,
+            amount: booking.booking_fee,
+            description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+            doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
+            appointment_date: selectedDate,
+            appointment_time: selectedTime
+          }),
+        });
 
-      // Fallback: direct HTTPS call to Functions
-      if (!paymentUrl) {
-        try {
-          const supClient = await import('@/integrations/supabase/client');
-          const SUPABASE_URL = supClient.SUPABASE_URL;
-          const SUPABASE_PUBLISHABLE_KEY = supClient.SUPABASE_PUBLISHABLE_KEY;
-          if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) throw new Error('Supabase configuration missing for direct function fallback');
-          if (!navigator.onLine) throw new Error('Network appears to be offline');
-          const { data: sessionData } = await supabase.auth.getSession();
-          const token = sessionData.session?.access_token;
-          const host = new URL(SUPABASE_URL).hostname;
-          const projectRef = host.split('.')[0];
-          const fnUrl = `https://${projectRef}.functions.supabase.co/create-payfast-payment`;
-          let resp: Response | null = null;
-          try {
-            resp = await fetch(fnUrl, {
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'omit',
-              headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_PUBLISHABLE_KEY,
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-              },
-              body: JSON.stringify({
-                booking_id: booking.id,
-                amount: booking.booking_fee,
-                description: `Booking fee for appointment with Dr. ${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-                doctor_name: `${doctor.profiles?.first_name} ${doctor.profiles?.last_name}`,
-                appointment_date: selectedDate,
-                appointment_time: selectedTime
-              }),
-            });
-          } catch (fetchErr: any) {
-            console.error('Direct function fetch failed:', fetchErr);
-            payErr = new Error(`Network error calling function: ${fetchErr?.message || String(fetchErr)}`);
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json?.success && json?.payment_url) {
+            paymentUrl = json.payment_url;
+          } else {
+            payErr = new Error(json?.error || 'Payment URL not returned');
           }
-
-          if (resp) {
-            if (resp.ok) {
-              const json = await resp.json();
-              if (json?.success && json?.payment_url) paymentUrl = json.payment_url;
-              else payErr = new Error(json?.error || 'Payment URL not returned');
-              if (json?.error) console.error('Direct function returned error payload:', json);
-            } else {
-              const text = await resp.text().catch(() => '');
-              payErr = new Error(`Edge Function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
-            }
-          }
-        } catch (e: any) {
-          payErr = e;
+        } else {
+          const text = await resp.text().catch(() => '');
+          payErr = new Error(`Payment function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
         }
+      } catch (fetchErr: any) {
+        console.error('PayFast payment function failed:', fetchErr);
+        payErr = new Error(`Network error calling payment function: ${fetchErr?.message || String(fetchErr)}`);
       }
 
       if (!paymentUrl) {

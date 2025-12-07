@@ -76,24 +76,34 @@ const MembershipManagement = () => {
 
     setIsUpgrading(true);
     try {
-      // Create PayFast payment for quarterly membership
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-payfast-payment', {
-        body: {
-          booking_id: `membership_${user.id}_${Date.now()}`,
+      // Get auth token for Netlify function
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+
+      // Call Netlify function for PayFast membership payment
+      const resp = await fetch('/api/create-payfast-membership', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
           amount: 3900, // R39 in cents
           description: 'MedMap Premium Membership - Quarterly',
-          doctor_name: 'Premium Membership',
-          appointment_date: new Date().toISOString().split('T')[0],
-          appointment_time: '00:00',
-          membership_type: 'premium'
-        }
+          plan: 'premium'
+        }),
       });
 
-      if (paymentError) throw paymentError;
-
-      // Redirect to PayFast
-      if (paymentData.payment_url) {
-        window.location.href = paymentData.payment_url;
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json?.success && json?.payment_url) {
+          window.location.href = json.payment_url;
+          return;
+        }
+        throw new Error(json?.error || 'Payment URL not returned');
+      } else {
+        const text = await resp.text().catch(() => '');
+        throw new Error(`Payment function HTTP ${resp.status}${text ? `: ${text}` : ''}`);
       }
 
     } catch (error: any) {
