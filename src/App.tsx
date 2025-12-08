@@ -26,6 +26,8 @@ const DoctorSearch = lazy(() => import("./pages/DoctorSearch"));
 const DoctorProfile = lazy(() => import("./pages/DoctorProfile"));
 const BookAppointment = lazy(() => import("./pages/BookAppointment"));
 const BookingSuccess = lazy(() => import("./pages/BookingSuccess"));
+const PayFastSuccess = lazy(() => import("./pages/PayFastSuccess"));
+const PayFastCancel = lazy(() => import("./pages/PayFastCancel"));
 const BookAppointments = lazy(() => import("./pages/BookAppointments"));
 const Telemedicine = lazy(() => import("./pages/Telemedicine"));
 const DoctorPortal = lazy(() => import("./pages/DoctorPortal"));
@@ -110,6 +112,8 @@ const App = () => {
                         <Route path="/booking-success" element={<BookingSuccess />} />
                         <Route path="/BookingSuccess" element={<Navigate to="/booking-success" replace />} />
                         <Route path="/bookingSuccess" element={<Navigate to="/booking-success" replace />} />
+                        <Route path="/payfast/success" element={<PayFastSuccess />} />
+                        <Route path="/payfast/cancel" element={<PayFastCancel />} />
                         <Route path="/doctor" element={<DoctorDashboard />} />
                         <Route path="/create-admin-account" element={<CreateAdminAccount />} />
                         <Route path="/CreateAdminAccount" element={<Navigate to="/create-admin-account" replace />} />
